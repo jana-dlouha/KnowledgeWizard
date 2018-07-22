@@ -1,0 +1,149 @@
+{% extends 'base.html.twig' %}
+
+    {% block stylesheets %}
+        {{ parent() }}
+
+        <!-- Custom fonts for this template-->
+        <link href="{{ asset('vendor/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet"/>
+        <!-- Page level plugin CSS-->
+        <link href="{{ asset('vendor/datatables/dataTables.bootstrap4.css') }}" rel="stylesheet"/>
+        <!-- Custom styles for this template-->
+        <link href="{{ asset('css/sb-admin.css') }}" rel="stylesheet"/>
+        <link href="{{ asset('css/jquery.contextMenu.css') }}" rel="stylesheet"/>
+
+    {% endblock %}
+
+
+    {% block body %}
+
+        <body class="fixed-nav sticky-footer bg-dark" id="page-top">
+
+        {% block navbar %}
+
+            <nav class="navbar navbar-expand-lg navbar-dark bg fixed-top" id="mainNav">
+
+                <!-- START BOOTSTRAP HEADER -->
+                <a class="navbar-brand" href="{{ path('homepage') }}">Start Bootstrap</a>
+                <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+                        data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+                        aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- LEFT NAVBAR -->
+                <div class="collapse navbar-collapse" id="navbarResponsive">
+                    <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
+
+                        {% for module in navbar %}
+
+                            <li class="nav-item" data-toggle="tooltip" data-placement="right" title={{ module.name }}>
+
+                                {% if module.submodules is not empty %}
+                                    <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse"
+                                       href="#collapse{{ module.name }}" data-parent="#exampleAccordion">
+                                        <i class="fa fa-fw fa-book"></i>
+                                        <span class="nav-link-text">{{ module.name }}</span>
+                                    </a>
+
+                                    <ul class="sidenav-second-level collapse" id="collapse{{ module.name }}">
+                                        {% for submodule in module.submodules %}
+                                            <li>
+                                                <a href="{{ path( submodule.path ) }}">{{ submodule.name }}</a>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+
+                                {% else %}
+                                    <a class="nav-link" href="{{ path( module.path ) }}">
+                                        <i class="fa fa-fw fa-dashboard"></i>
+                                        <span class="nav-link-text">{{ module.name }}</span>
+                                    </a>
+                                {% endif %}
+
+                            </li>
+
+                        {% endfor %}
+
+                    </ul>
+
+                    <!-- Hide navbar -->
+                    <ul class="navbar-nav sidenav-toggler">
+                        <li class="nav-item">
+                            <a class="nav-link text-center" id="sidenavToggler">
+                                <i class="fa fa-fw fa-angle-left"></i>
+                            </a>
+                        </li>
+                    </ul>
+
+
+                    <!-- TOP NAVBAR -->
+                    <ul class="navbar-nav ml-auto">
+
+                        <!-- Search -->
+                        <li class="nav-item">
+                            <form class="form-inline my-2 my-lg-0 mr-lg-2">
+                                <div class="input-group">
+                                    <input class="form-control" type="text" placeholder="Search for...">
+                                    <span class="input-group-append">
+                                        <button class="btn btn-primary" type="button">
+                                          <i class="fa fa-search"></i>
+                                        </button>
+                                    </span>
+                                </div>
+                            </form>
+                        </li>
+
+                    </ul>
+                </div>
+            </nav>
+
+        {% endblock %}
+
+        {% block page %}
+            <div class="content-wrapper">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+
+                            {% block content %}{% endblock %}
+
+                        </div>
+                    </div>
+                </div>
+
+                <footer class="sticky-footer">
+                    <div class="container">
+                        <div class="text-center">
+                            <small>Copyright © IntelligenceToday 2018</small>
+                        </div>
+                    </div>
+                </footer>
+
+            </div>
+        {% endblock%}
+
+        {% block javascripts %}
+            {{ parent() }}
+
+            <!-- Core plugin JavaScript-->
+            <script src="{{ asset('vendor/jquery-easing/jquery.easing.min.js') }}"></script>
+            <!-- Page level plugin JavaScript-->
+{#
+            <script src="{{ asset('vendor/chart.js/Chart.min.js') }}"></script>
+#}
+            <script src="{{ asset('vendor/datatables/jquery.dataTables.js') }}"></script>
+            <script src="{{ asset('vendor/datatables/dataTables.bootstrap4.js') }}"></script>
+            <!-- Custom scripts for all pages-->
+            <script src="{{ asset('js/sb-admin.min.js') }}"></script>
+            <!-- Custom scripts for this page-->
+            <script src="{{ asset('js/sb-admin-datatables.min.js') }}"></script>
+            <script src="{{ asset('js/jquery.contextMenu.js') }}"></script>
+            <script src="{{ asset('js/jquery.ui.position.js') }}"></script>
+{#
+            <script src="{{ asset('js/sb-admin-charts.min.js') }}"></script>
+#}
+        {% endblock %}
+
+        </body>
+
+    {% endblock %}

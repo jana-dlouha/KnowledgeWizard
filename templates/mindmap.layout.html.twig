@@ -9,6 +9,8 @@
         <link href="{{ asset('vendor/datatables/dataTables.bootstrap4.css') }}" rel="stylesheet"/>
         <!-- Custom styles for this template-->
         <link href="{{ asset('css/sb-admin.css') }}" rel="stylesheet"/>
+        <link href="{{ asset('css/jquery.contextMenu.css') }}" rel="stylesheet"/>
+
     {% endblock %}
 
 
@@ -18,10 +20,10 @@
 
         {% block navbar %}
 
-            <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
+            <nav class="navbar navbar-expand-lg navbar-dark bg fixed-top" id="mainNav">
 
                 <!-- START BOOTSTRAP HEADER -->
-                <a class="navbar-brand" href="{{ path('Admin:Admin:homepage') }}">Start Bootstrap</a>
+                <a class="navbar-brand" href="{{ path('homepage') }}">Start Bootstrap</a>
                 <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
                         data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
                         aria-label="Toggle navigation">
@@ -32,57 +34,35 @@
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
 
-                        <!-- Dashboard -->
-                        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Dashboard">
-                            <a class="nav-link" href="{{ path('Admin:Admin:homepage') }}">
-                                <i class="fa fa-fw fa-dashboard"></i>
-                                <span class="nav-link-text">Dashboard</span>
-                            </a>
-                        </li>
+                        {% for module in navbar %}
 
-                        <!-- Posts -->
-                        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Posts">
-                            <a class="nav-link" href="{{ path('Admin:Post:homepage') }}">
-                                <i class="fa fa-fw fa-book"></i>
-                                <span class="nav-link-text">Posts</span>
-                            </a>
-                        </li>
+                            <li class="nav-item" data-toggle="tooltip" data-placement="right" title={{ module.name }}>
 
-                        <!-- Statistics -->
-                        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Statistics">
-                            <a class="nav-link" href="{{ path('Admin:Statistic:homepage') }}">
-                                <i class="fa fa-fw fa-area-chart"></i>
-                                <span class="nav-link-text">Statistics</span>
-                            </a>
-                        </li>
+                                {% if module.submodules is not empty %}
+                                    <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse"
+                                       href="#collapse{{ module.name }}" data-parent="#exampleAccordion">
+                                        <i class="fa fa-fw fa-book"></i>
+                                        <span class="nav-link-text">{{ module.name }}</span>
+                                    </a>
 
-                        <!-- Users -->
-                        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Users">
-                            <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse"
-                               href="#collapseComponents" data-parent="#exampleAccordion">
-                                <i class="fa fa-fw fa-wrench"></i>
-                                <span class="nav-link-text">Users</span>
-                            </a>
-                            <ul class="sidenav-second-level collapse" id="collapseComponents">
-                                <li>
-                                    <a href="{{ path('Admin:User:homepage') }}">Users</a>
-                                </li>
-                            </ul>
-                        </li>
+                                    <ul class="sidenav-second-level collapse" id="collapse{{ module.name }}">
+                                        {% for submodule in module.submodules %}
+                                            <li>
+                                                <a href="{{ path( submodule.path ) }}">{{ submodule.name }}</a>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
 
-                        <!-- Settings -->
-                        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Settings">
-                            <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse"
-                               href="#collapseSettings" data-parent="#exampleAccordion">
-                                <i class="fa fa-fw fa-wrench"></i>
-                                <span class="nav-link-text">Settings</span>
-                            </a>
-                            <ul class="sidenav-second-level collapse" id="collapseSettings">
-                                <li>
-                                    <a href="{{ path('Admin:Post:homepage') }}">Blog</a>
-                                </li>
-                            </ul>
-                        </li>
+                                {% else %}
+                                    <a class="nav-link" href="{{ path( module.path ) }}">
+                                        <i class="fa fa-fw fa-dashboard"></i>
+                                        <span class="nav-link-text">{{ module.name }}</span>
+                                    </a>
+                                {% endif %}
+
+                            </li>
+
+                        {% endfor %}
 
                     </ul>
 
@@ -121,23 +101,19 @@
 
         {% block page %}
             <div class="content-wrapper">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-12">
+                <div id="wrapper" class="wrapper-context-menu" data-script="{{ path('MindMap:Save') }}">
 
-                            {% block content %}{% endblock %}
+                    {% block content %}{% endblock %}
 
-                        </div>
-                    </div>
                 </div>
 
-                <footer class="sticky-footer">
+                {#<footer class="sticky-footer">
                     <div class="container">
                         <div class="text-center">
                             <small>Copyright © IntelligenceToday 2018</small>
                         </div>
                     </div>
-                </footer>
+                </footer>#}
 
             </div>
         {% endblock%}
@@ -148,14 +124,20 @@
             <!-- Core plugin JavaScript-->
             <script src="{{ asset('vendor/jquery-easing/jquery.easing.min.js') }}"></script>
             <!-- Page level plugin JavaScript-->
+{#
             <script src="{{ asset('vendor/chart.js/Chart.min.js') }}"></script>
+#}
             <script src="{{ asset('vendor/datatables/jquery.dataTables.js') }}"></script>
             <script src="{{ asset('vendor/datatables/dataTables.bootstrap4.js') }}"></script>
             <!-- Custom scripts for all pages-->
             <script src="{{ asset('js/sb-admin.min.js') }}"></script>
             <!-- Custom scripts for this page-->
             <script src="{{ asset('js/sb-admin-datatables.min.js') }}"></script>
+            <script src="{{ asset('js/jquery.contextMenu.js') }}"></script>
+            <script src="{{ asset('js/jquery.ui.position.js') }}"></script>
+{#
             <script src="{{ asset('js/sb-admin-charts.min.js') }}"></script>
+#}
         {% endblock %}
 
         </body>

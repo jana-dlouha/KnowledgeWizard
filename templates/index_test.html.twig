@@ -1,0 +1,127 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    <style>
+        div[type="underline"] {
+            padding-bottom: 4px;
+            border-bottom: 4px solid #28a745;
+            display: inline-block;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+
+{#    <div type="underline">
+        <div type="node" id="node1" class="btn btn-success context-menu"
+             data-parent="0" data-key="1">
+            Parent
+        </div>
+    </div>
+
+    <div type="underline">
+        <div type="node" id="node11" class="btn btn-success context-menu"
+             data-parent="1" data-key="11">
+            Child
+        </div>
+    </div>
+
+    <div type="underline">
+        <div type="node" id="node12" class="btn btn-success context-menu"
+             data-parent="1" data-key="12">
+            Child
+        </div>
+    </div>
+
+    <div type="underline">
+        <div type="node" id="node13" class="btn btn-success context-menu"
+             data-parent="1" data-key="13">
+            Child
+        </div>
+    </div>#}
+
+
+
+    <svg style="width: 100%; height: 800px; ">
+        <!-- center -->
+        <path d="M 500,320 C 400,320 300,220 200,120 150,100
+              " style="stroke: deepskyblue; fill: none;
+              stroke-width: 10px;"
+        />
+
+        <path d="M 500,320 C 600,300 300,260 200,100 150,100
+              " style="stroke: darkred; fill: none;
+              stroke-width: 10px;"
+        />
+
+        <path d="M 500,320 C 200,340 300,220 400,120 150,100
+              " style="stroke: greenyellow; fill: none;
+              stroke-width: 10px;"
+        />
+
+        <a xlink:href="https://www.google.co.uk/" target="_top">
+            <text x="200" y="100" fill="Black" text-anchor="middle"
+                  alignment-baseline="central">Node1
+            </text>
+        </a>
+
+        <a xlink:href="https://www.google.co.uk/" target="_top">
+            <text x="300" y="200" fill="Black" text-anchor="middle"
+                  alignment-baseline="central">Node2
+            </text>
+        </a>
+
+        <a xlink:href="https://www.google.co.uk/" target="_top">
+            <text x="400" y="300" fill="Black" text-anchor="middle"
+                  alignment-baseline="central">Node3
+            </text>
+        </a>
+
+        <a xlink:href="https://www.google.co.uk/" target="_top">
+            <text x="500" y="300" fill="Black" text-anchor="middle"
+                  alignment-baseline="central">CENTER
+            </text>
+        </a>
+
+        <a xlink:href="https://www.google.co.uk/" target="_top">
+            <text x="600" y="300" fill="Black" text-anchor="middle"
+                  alignment-baseline="central">Node4
+            </text>
+        </a>
+
+        <a xlink:href="https://www.google.co.uk/" target="_top">
+            <text x="700" y="200" fill="Black" text-anchor="middle"
+                  alignment-baseline="central">Node5
+            </text>
+        </a>
+
+        <a xlink:href="https://www.google.co.uk/" target="_top">
+            <text x="600" y="150" fill="Black" text-anchor="middle"
+                  alignment-baseline="central">Node6
+            </text>
+        </a>
+
+        <a xlink:href="https://www.google.co.uk/" target="_top">
+            <text x="100" y="350" fill="Black" text-anchor="middle"
+                  alignment-baseline="central">Node7
+            </text>
+        </a>
+    </svg>
+
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script src="{{ asset('js/MyMindMap.js.twig.twig') }}"></script>
+
+
+    <script>
+
+    </script>
+{% endblock %}

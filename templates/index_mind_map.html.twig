@@ -1,0 +1,47 @@
+{% extends 'mindmap.layout.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    <!-- jquery-ui -->
+    <link href="{{ asset('css/jquery-ui.css') }}" rel="stylesheet" type="text/css">
+
+    <!-- context-menu -->
+    <link href="{{ asset('css/jquery.contextMenu.css') }}" rel="stylesheet" type="text/css">
+
+    <!-- MyMindMap -->
+    <link href="{{ asset('css/MyMindMap.css') }}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block content %}
+
+{#
+    <div id="main-topic" type="node" class="node-menu-one" data-level="0">Main topic</div>
+#}
+
+
+{#
+    <div id="paths"></div>
+#}
+
+    <div id="text-input-dialog" title="Vložit text" style="display: none;">
+        <input id="text-input" type="text" value="placeholder"/>
+    </div>
+
+    <div id="url-input-dialog" title="Vložit text" style="display: none;">
+        <input id="url-input" type="text" value="placeholder"/>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script src="{{ asset('js/jquery.ui.position.js') }}"></script>
+    <script src="{{ asset('js/jquery.contextMenu.js') }}"></script>
+    <script src="{{ asset('js/svg.js') }}"></script>
+    <script src="{{ asset('js/MyMindMap.js') }}"></script>
+
+{% endblock %}

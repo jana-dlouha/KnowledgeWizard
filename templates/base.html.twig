@@ -7,23 +7,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    {% block title %}<title>Intelligence Everyday</title>{% endblock %}
+    <title>{% block title %}{% endblock %}</title>
 
     {% block stylesheets %}
         <!-- Bootstrap core CSS -->
         <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+        <!-- jQuery UI -->
+        <link href="{{ asset('css/jquery-ui.css') }}">
     {% endblock %}
 {% endblock %}
 
 
 {% block body %}
 
-    {% block contents %}{% endblock %}
+    {% block contents %}
 
-    {% block javascripts %}
-        <!-- Bootstrap core JavaScript-->
-        <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
-        <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+        {% block javascripts %}
+            <!-- Bootstrap core JavaScript-->
+            <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
+            <script src="{{ asset('js/jquery-ui.js') }}"></script>
+            <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+        {% endblock %}
+
     {% endblock %}
 
 {% endblock %}
