@@ -122,16 +122,13 @@ function getNodePosition( $parentContainer, $parent, $node, side ) {
         }
     }
 
-    console.log(side);
-    console.log((side === "left") ? "left" : "right");
-    console.log(side + "+" + (children * 40));
-    console.log($parentContainer);
-
     $node.position({
-        my: (side === "left") ? "left+200" : "right+200",
-        at: side + " top+" + (children * 40),
+        my: side,
+        at: side + " center+" + (children * 40),
         of: $parentContainer
     });
+
+    newContainer( $node, side );
 }
 
 
@@ -142,9 +139,6 @@ function getNodePosition( $parentContainer, $parent, $node, side ) {
  * @param side
  */
 function newContainer( $node, side ){
-    console.log($node);
-
-
     return $('<ul></ul>')
         .addClass('container')
         .attr('id', 'container-' + side + '-' + $node.attr('id'))
@@ -164,8 +158,7 @@ function newContainer( $node, side ){
             at: side,
             of: $node
         })
-        .css('background-color', 'ghostwhite')
-        .css('border', '1px solid gray');
+        .css('background-color', 'ghostwhite');
 }
 
 
