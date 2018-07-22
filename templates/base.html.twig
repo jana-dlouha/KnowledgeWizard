@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% block head %}
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    {% block title %}<title>Intelligence Everyday</title>{% endblock %}
+
+    {% block stylesheets %}
+        <!-- Bootstrap core CSS -->
+        <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    {% endblock %}
+{% endblock %}
+
+
+{% block body %}
+
+    {% block contents %}{% endblock %}
+
+    {% block javascripts %}
+        <!-- Bootstrap core JavaScript-->
+        <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
+        <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    {% endblock %}
+
+{% endblock %}
