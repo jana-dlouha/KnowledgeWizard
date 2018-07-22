@@ -88,6 +88,7 @@ function newNode( $parent, side ){
 
     let $node = $('<li class="node">New node</li>')
         .attr('data-side', side)
+        .attr('data-level', parseInt($parent.attr('data-level')) + 1)
         .uniqueId()
         .appendTo( $parentContainer );
 
@@ -144,7 +145,7 @@ function newContainer( $node, side ){
         .attr('id', 'container-' + side + '-' + $node.attr('id'))
         .attr('data-parent', $node.attr('id'))
         .attr('data-side', side)
-        .attr('data-level', $node.data('level') + 1)
+        .attr('data-level', parseInt($node.attr('data-level')) + 1)
         .css('height', parseInt($node.css('height')))
         .data('centering', true)
         .draggable({
@@ -158,7 +159,8 @@ function newContainer( $node, side ){
             at: side,
             of: $node
         })
-        .css('background-color', 'ghostwhite');
+        .css('background-color', 'ghostwhite')
+        .css('border', '1px solid gray');
 }
 
 
