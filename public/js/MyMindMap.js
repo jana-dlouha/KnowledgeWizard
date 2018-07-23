@@ -81,55 +81,81 @@ function newMainTopic(){
  * @param side
  */
 function newNode( $parent, side ){
-    let $parentContainer = $('ul[data-parent = "'
-        + $parent.attr('id') + '"]'
-        + '[data-side = "' + side + '"]'
-    );
-
     let $node = $('<li class="node">New node</li>')
         .attr('data-side', side)
         .attr('data-level', parseInt($parent.attr('data-level')) + 1)
         .uniqueId()
-        .appendTo( $parentContainer );
+        .draggable({});
 
-    getNodePosition( $parentContainer, $parent, $node, side );
+    getParentContainer( $parent, side).append( $node );
+    reCenterParentContainer( $parent, $node, side );
     newContainer( $node, side );
+    getNodePosition( $parent, $node, side );
 }
 
 
 /**
  *
- * @param $parentContainer
+ * @param $parent
+ * @param side
+ *
+ * @returns {*|jQuery|HTMLElement}
+ */
+function getParentContainer( $parent, side ){
+    return $('ul[data-parent = "'
+        + $parent.attr('id') + '"]'
+        + '[data-side = "' + side + '"]'
+    );
+}
+
+
+/**
+ *
  * @param $parent
  * @param $node
  * @param side
- * @returns {*|jQuery|HTMLElement}
  */
-function getNodePosition( $parentContainer, $parent, $node, side ) {
-    let children = $parentContainer.children().length - 1;
+function reCenterParentContainer( $parent, $node, side ){
+    let $parentContainer = getParentContainer( $parent, side );
 
-    if(children){
-        let nodeHeight = parseInt($node.css('height'));
-        let oldContainerHeight = parseInt($parentContainer.css('height'));
-        let newContainerHeight = oldContainerHeight + nodeHeight + 40;
-        $parentContainer.height(newContainerHeight);
-
-        if($parentContainer.data('centering')){
-            $parentContainer.position({
-                my: getOppositeSide(side) + " center",
-                at: side + " center",
-                of: $parent
-            });
-        }
+    if(! $parentContainer.data('centering')){
+        return;
     }
 
+    let nodeHeight = parseInt($node.css('height'));
+    let oldContainerHeight = parseInt($parentContainer.css('height'));
+    let newContainerHeight = oldContainerHeight + nodeHeight + 40;
+    $parentContainer.height(newContainerHeight);
+
+    $parentContainer.position({
+        my: getOppositeSide(side) + " center",
+        at: side + " center",
+        of: $parent
+    });
+
+    return $parentContainer;
+}
+
+
+/**
+ *
+ * @param $parent
+ * @param $node
+ * @param side
+ *
+ * @returns {*|jQuery|HTMLElement}
+ */
+function getNodePosition( $parent, $node, side ) {
+    let $parentContainer = getParentContainer( $parent, side );
+    let children = $parentContainer.children().length - 1;
+
     $node.position({
-        my: side,
+        my: getOppositeSide(side),
         at: side + " center+" + (children * 40),
         of: $parentContainer
     });
 
-    newContainer( $node, side );
+    return $node;
 }
 
 
@@ -158,9 +184,7 @@ function newContainer( $node, side ){
             my: getOppositeSide(side),
             at: side,
             of: $node
-        })
-        .css('background-color', 'ghostwhite')
-        .css('border', '1px solid gray');
+        });
 }
 
 
@@ -176,13 +200,12 @@ function switchSide( $node ){
 /**
  *
  * @param side
+ *
  * @returns {string}
  */
 function getOppositeSide( side ){
     return side === "left" ? "right" : "left";
 }
-
-
 
 
 /**
