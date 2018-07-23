@@ -91,6 +91,7 @@ function newNode( $parent, side ){
     reCenterParentContainer( $parent, $node, side );
     newContainer( $node, side );
     getNodePosition( $parent, $node, side );
+    getPath( $parent, $node );
 }
 
 
@@ -231,6 +232,64 @@ function showAddButtons( $node, side ){
         at: side + " center",
         of: $node
     });
+}
+
+
+function getPath( $parent, $node ){
+    let pathPosition = getPathPosition($node, $parent);
+    let pathColor = 'purple';//getColor($parent);
+
+    console.log('old position');
+    console.log(pathPosition);
+
+    /** TODO */
+    let path = draw.path(
+        'M' + pathPosition.parentLeft + ' ' +
+        pathPosition.parentTop + ' L' +
+        pathPosition.childLeft + ' ' +
+        pathPosition.childTop
+    );
+    /** TODO */
+
+    path.fill('none')
+        .stroke({
+        color: pathColor,
+        width: 10,
+        linecap: 'round',
+        linejoin: 'round'
+    })
+    .attr('data-parent', $parent.attr('id'))
+    .attr('data-child', $node.attr('id'));
+
+    $node.attr('data-branch-color', pathColor);
+}
+
+
+function getPathPosition( $node, $parent ){
+    let wrapperOffset = $('#wrapper').offset();
+    let $start = $('<div style="width: 10px; height: 1px;" />')
+        .appendTo( $parent );
+    let $end = $('<div style="width: 10px; height: 1px;" />')
+        .appendTo( $node );
+
+    $start.position({
+        my: "center",
+        at: $node.attr('data-side') + " center",
+        of: $parent
+    });
+
+    $end.position({
+        my: "center",
+        at: getOppositeSide( $node.attr('data-side') ) + " center",
+        of: $node
+    });
+
+    return {
+        parentTop: $start.offset().top - wrapperOffset.top,
+        parentLeft: $start.offset().left - wrapperOffset.left,
+        childTop: $end.offset().top - wrapperOffset.top,
+        childLeft: $end.offset().left - wrapperOffset.left
+    };
 }
 
 
