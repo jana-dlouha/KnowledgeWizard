@@ -89,6 +89,11 @@ html, body {
     z-index: 10;
 }
 
+.start-point, .end-point {
+    width: 10px;
+    height: 10px;
+}
+
 table {
     font-size: 1em;
 }

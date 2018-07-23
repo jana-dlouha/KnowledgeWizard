@@ -59,6 +59,9 @@ function newMainTopic(){
         .draggable({
             start: function() {
                 $('.add-button').remove();
+            },
+            stop: function() {
+                movePaths( $(this) );
             }
         })
         .appendTo($wrapper)
@@ -84,14 +87,20 @@ function newNode( $parent, side ){
     let $node = $('<li class="node">New node</li>')
         .attr('data-side', side)
         .attr('data-level', parseInt($parent.attr('data-level')) + 1)
+        .attr('data-parent', $parent.attr('id'))
         .uniqueId()
-        .draggable({});
+        .draggable({
+            stop: function(){
+                movePaths( $( this ) );
+            }
+        });
 
     getParentContainer( $parent, side).append( $node );
     reCenterParentContainer( $parent, $node, side );
     newContainer( $node, side );
     getNodePosition( $parent, $node, side );
     getPath( $parent, $node );
+    movePaths( $parent );
 }
 
 
@@ -178,6 +187,9 @@ function newContainer( $node, side ){
         .draggable({
             start: function( event ) {
                 $(event.target).data('centering', false)
+            },
+            stop: function() {
+                movePaths( $node );
             }
         })
         .appendTo( $node )
@@ -235,12 +247,14 @@ function showAddButtons( $node, side ){
 }
 
 
+/**
+ *
+ * @param $parent
+ * @param $node
+ */
 function getPath( $parent, $node ){
-    let pathPosition = getPathPosition($node, $parent);
     let pathColor = 'purple';//getColor($parent);
-
-    console.log('old position');
-    console.log(pathPosition);
+    let pathPosition = getPathPosition( $parent, $node );
 
     /** TODO */
     let path = draw.path(
@@ -265,11 +279,38 @@ function getPath( $parent, $node ){
 }
 
 
-function getPathPosition( $node, $parent ){
+/**
+ *
+ * @param $parent
+ * @param $node
+ */
+function removePath( $parent, $node ){
+    $node.children('.start-point').remove();
+    $parent.children('.end-point').remove();
+
+    let $path = $('path' +
+        '[data-parent=' + $parent.attr('id') + ']' +
+        '[data-child=' + $node.attr('id') + ']'
+    );
+
+    $path.remove();
+}
+
+
+/**
+ *
+ * @param $node
+ * @param $parent
+ *
+ * @returns {{parentTop: number, parentLeft: number, childTop: number, childLeft: number}}
+ */
+function getPathPosition( $parent, $node ){
     let wrapperOffset = $('#wrapper').offset();
-    let $start = $('<div style="width: 10px; height: 1px;" />')
+    let $start = $('<div class="start-point" />')
+        .attr('data-parent', $parent.attr('id'))
         .appendTo( $parent );
-    let $end = $('<div style="width: 10px; height: 1px;" />')
+    let $end = $('<div class="end-point" />')
+        .attr('data-parent', $node.attr('id'))
         .appendTo( $node );
 
     $start.position({
@@ -290,6 +331,27 @@ function getPathPosition( $node, $parent ){
         childTop: $end.offset().top - wrapperOffset.top,
         childLeft: $end.offset().left - wrapperOffset.left
     };
+}
+
+
+/**
+ *
+ * @param $node
+ */
+function movePaths( $node ){
+    if( $node.attr('id') != 'main-topic' ){
+        let $parent = document.getElementById( $node.attr('data-parent') );
+
+        removePath( $($parent), $node );
+        getPath( $($parent), $node );
+    }
+
+    let $children = $node.children('ul').children('li');
+
+    $children.each( function(){
+            movePaths($(this));
+        }
+    );
 }
 
 
