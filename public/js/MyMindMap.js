@@ -1,4 +1,14 @@
+/**
+ * OPTIONS
+ */
+
+/** global ariables */
 let $wrapper, $paths, $mainTopic, oldOffset, newOffset, $addLeft, $addRight, nodes;
+
+/** vertical spacing between nodes */
+let spacing = 50;
+
+/** branches color scheme */
 let colors = {
     1: '#462771',
     2: '#B89AE2',
@@ -91,14 +101,17 @@ function newNode( $parent, side ){
         .uniqueId()
         .draggable({
             stop: function(){
+                if( checkSide( $( this ) )){
+                    switchSide( $( this ) );
+                }
                 movePaths( $( this ) );
             }
         });
 
     getParentContainer( $parent, side).append( $node );
-    reCenterParentContainer( $parent, $node, side );
+    reCenterParentContainer( $parent, $node, side, spacing );
     newContainer( $node, side );
-    getNodePosition( $parent, $node, side );
+    getNodePosition( $parent, $node, side, spacing );
     getPath( $parent, $node );
     movePaths( $parent );
 }
@@ -124,8 +137,9 @@ function getParentContainer( $parent, side ){
  * @param $parent
  * @param $node
  * @param side
+ * @param spacing
  */
-function reCenterParentContainer( $parent, $node, side ){
+function reCenterParentContainer( $parent, $node, side, spacing = 0 ){
     let $parentContainer = getParentContainer( $parent, side );
 
     if(! $parentContainer.data('centering')){
@@ -134,9 +148,22 @@ function reCenterParentContainer( $parent, $node, side ){
 
     let nodeHeight = parseInt($node.css('height'));
     let oldContainerHeight = parseInt($parentContainer.css('height'));
-    let newContainerHeight = oldContainerHeight + nodeHeight + 40;
+    let newContainerHeight = oldContainerHeight + nodeHeight + spacing;
     $parentContainer.height(newContainerHeight);
 
+    return setContainerPosition( $parentContainer, side, $parent );
+}
+
+
+/**
+ *
+ * @param $parentContainer
+ * @param side
+ * @param $parent
+ *
+ * @returns {*}
+ */
+function setContainerPosition( $parentContainer, side, $parent ){
     $parentContainer.position({
         my: getOppositeSide(side) + " center",
         at: side + " center",
@@ -152,16 +179,22 @@ function reCenterParentContainer( $parent, $node, side ){
  * @param $parent
  * @param $node
  * @param side
+ * @param spacing
  *
  * @returns {*|jQuery|HTMLElement}
  */
-function getNodePosition( $parent, $node, side ) {
+function getNodePosition( $parent, $node, side, spacing = 0 ) {
     let $parentContainer = getParentContainer( $parent, side );
-    let children = $parentContainer.children().length - 1;
+
+    //TODO - better solution
+    if( spacing ){
+        let children = $parentContainer.children().length;
+        spacing = ( children ? (children - 1) : 0 ) * spacing;
+    }
 
     $node.position({
         my: getOppositeSide(side),
-        at: side + " center+" + (children * 40),
+        at: side + " center+" + spacing,
         of: $parentContainer
     });
 
@@ -203,10 +236,45 @@ function newContainer( $node, side ){
 
 /**
  *
+ * @param $element
+ * @returns {boolean}
+ */
+function checkSide( $element ){
+    let side = $element.attr('data-side');
+    let nodeOffset = $element.offset().left;
+    let centerOffset = $('#main-topic').offset().left;
+
+    return (
+        ( side == 'left' && ( nodeOffset > centerOffset ) ) ||
+        ( side == 'right' && ( nodeOffset < centerOffset ) )
+    )
+}
+
+
+/**
+ *
  * @param $node
  */
 function switchSide( $node ){
+    let $parent = $( document.getElementById( $node.attr('id') ) );
+    let $container = getParentContainer( $parent, $node.attr('data-side'));
+    let $childNodes = $node.children('ul').children('li');
+    let newSide = getOppositeSide( $node.attr('data-side') );
 
+    $node.attr('data-side', newSide);
+    $container.attr('data-side', newSide);
+
+    $childNodes.each( function(){
+        let difference = parseInt( $( this ).css('left') );
+        let correction = $node.offset().left - $( this ).offset().left;
+
+        switchSide( $( this ) );
+
+        $( this ).css('left', difference + correction);
+    } );
+
+    getNodePosition( $parent, $node, newSide );
+    setContainerPosition( $container, newSide, $parent );
 }
 
 
@@ -249,6 +317,22 @@ function showAddButtons( $node, side ){
 
 /**
  *
+ * @param $node
+ */
+function getSide( $node ){
+    let mainOffset = $('#main-topic').offset().left;
+    let mainCenter = $('#main-topic').width() / 2;
+
+    if( (mainOffset - mainCenter - $node.offset().left) >= 0 ){
+        return 'left';
+    }
+
+    return 'right';
+}
+
+
+/**
+ *
  * @param $parent
  * @param $node
  */
@@ -285,15 +369,13 @@ function getPath( $parent, $node ){
  * @param $node
  */
 function removePath( $parent, $node ){
-    $node.children('.start-point').remove();
-    $parent.children('.end-point').remove();
+    $parent.children('div.start-point').remove();
+    $node.children('div.end-point').remove();
 
-    let $path = $('path' +
+    $('path' +
         '[data-parent=' + $parent.attr('id') + ']' +
         '[data-child=' + $node.attr('id') + ']'
-    );
-
-    $path.remove();
+    ).remove();
 }
 
 
@@ -312,16 +394,17 @@ function getPathPosition( $parent, $node ){
     let $end = $('<div class="end-point" />')
         .attr('data-parent', $node.attr('id'))
         .appendTo( $node );
+    let side = getSide( $node );
 
     $start.position({
         my: "center",
-        at: $node.attr('data-side') + " center",
+        at: side + " center",
         of: $parent
     });
 
     $end.position({
         my: "center",
-        at: getOppositeSide( $node.attr('data-side') ) + " center",
+        at: getOppositeSide( side ) + " center",
         of: $node
     });
 
