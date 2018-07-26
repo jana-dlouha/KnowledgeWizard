@@ -60,11 +60,33 @@ function showTextInputDialog( nodeId ){
 
 
 /**
+ * TODO - URL input dialog
+ *
+ * @param $node
+ */
+function showUrlInputDialog( $node ){
+    let dialog = $( "#url-input-dialog" ).dialog({
+        autoOpen: true,
+        modal: true,
+        buttons: {
+            "OK": function(){
+                $node.attr('data-url', $('#url-input').val());
+                dialog.dialog( "close" );
+            },
+            Cancel: function() {
+                dialog.dialog( "close" );
+            }
+        }
+    });
+}
+
+
+/**
  *
  * @param $parent
  */
 function collapseBranch( $parent ){
-    let children = getArrayOfChildren($parent);
+    let children = $parent.children().find('li');
 
     $.each( children, function() {
         $(this).css('display', 'none');
@@ -85,7 +107,7 @@ function collapseBranch( $parent ){
  * @param $parent
  */
 function expandBranch( $parent ){
-    let children = getArrayOfChildren($parent);
+    let children = $parent.children().find('li');
 
     $.each( children, function() {
         $(this).css('display', 'block');
