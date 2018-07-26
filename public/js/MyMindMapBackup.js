@@ -30,6 +30,8 @@ let colors = {
 let colorNumber = 1;
 
 /**
+ * DONE
+ *
  * Document ready actions
  */
 $( document ).ready( function(){
@@ -64,17 +66,17 @@ $( document ).ready( function(){
     /**
      * Add button events and positioning
      */
-    $('#main-topic')
-        /*.on('mouseover', function(){
+    /*$('#main-topic')
+        .on('mouseover', function(){
             showAddButtons( $( this ) );
         })
         .on('mouseleave', function (){
             $('.add-button').css('display', 'none');
-        })*/
+        })
         .on('dblclick', function (){
             showTextInputDialog( $(this) );
         })
-        /*.on('mouseover', function(){
+        .on('mouseover', function(){
             $( $( this )).css('display', 'block');
         })
         .on('mouseleave', function(){
@@ -101,14 +103,15 @@ $( document ).ready( function(){
 
         $('div[type="node"]').on('mouseleave', function () {
             $('.add-button').css('display', 'none');
-        });*/
+        });
 
-        /** Change node text */
+         Change node text
         $('div[type="node"]').on('dblclick', function () {
             showTextInputDialog( $(this) );
         });
 
-        /*addPathToChild( $child, $parent );
+
+        addPathToChild( $child, $parent );
 
         let oldOffset, newOffset;
 
@@ -122,8 +125,8 @@ $( document ).ready( function(){
                 changeParentPathPosition( $(this), $parent );
                 changeChildrenPathsPosition( $(this), $parent );
             }
-        });*/
-    });
+        });
+    });*/
 });
 
 
@@ -317,7 +320,7 @@ function changeChildrenPositions( $node, oldOffset, newOffset ){
 
 
 /**
- * TODO - will I need this?
+ * DONE - replaced
  *
  * Returns array of child node objects
  *
@@ -503,7 +506,7 @@ function changeChildrenPathsPosition( $child, $parent = 0 ){
 
 
 /**
- * TODO - collapse branch
+ * DONE
  *
  * @param $parent
  */
@@ -525,7 +528,7 @@ function collapseBranch( $parent ){
 
 
 /**
- * TODO - expand branch
+ * DONE
  *
  * @param $parent
  */
@@ -543,7 +546,7 @@ function expandBranch( $parent ){
 
 
 /**
- * TODO
+ * DONE
  *
  * @param $parent
  */
@@ -574,7 +577,7 @@ function deleteBranch( $parent ){
 /** ------------------------------------------------ */
 
 /**
- * TODO - text input dialog
+ * DONE
  *
  * @param $node
  */
@@ -596,7 +599,7 @@ function showTextInputDialog( $node ){
 
 
 /**
- * TODO - URL input dialog
+ * DONE
  *
  * @param $node
  */
@@ -618,7 +621,7 @@ function showUrlInputDialog( $node ){
 
 
 /**
- * TODO - context menu
+ * DONE
  *
  * Nodes context menu
  */

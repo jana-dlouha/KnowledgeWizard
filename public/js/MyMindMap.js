@@ -60,7 +60,7 @@ function showTextInputDialog( nodeId ){
 
 
 /**
- * TODO - URL input dialog
+ * TODO - url selector using symfony
  *
  * @param $node
  */
@@ -107,12 +107,12 @@ function collapseBranch( $parent ){
  * @param $parent
  */
 function expandBranch( $parent ){
-    let children = $parent.children().find('li');
+    let children = $parent.children().find('> li');
 
     $.each( children, function() {
         $(this).css('display', 'block');
 
-        addPathToChild( $(this), $parent);
+        getPath( $parent, $(this) );
 
         expandBranch( $(this) );
     });
