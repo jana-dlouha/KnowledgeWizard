@@ -626,10 +626,114 @@ function movePaths( $node ){
 
 
 /**
+ * BACKEND CONNECTION
+ */
+
+
+/**
+ * TODO
+ */
+function saveMindMap(){
+    /**
+     *
+     * TODO
+     *
+     */
+    console.log($parent.attr('id'));
+    console.log($(this).attr('id'));
+    console.log($( this ).offsetRelative('#' + $parent.attr('id')));
+    /**
+     *
+     * TODO
+     *
+     */
+
+    let url = $('#wrapper').attr('data-script');
+    let nodes = $('#main-topic, .node');
+    let data;
+    let convertedArray = [];
+    let wrapperOffset = $('#wrapper').offset();
+
+    nodes.push($('#main-topic'));
+    nodes.push($('.node'));
+
+    $.each( nodes, function() {
+        data = {
+            "id": $(this).attr('id'),
+            "class": $(this).attr('class'),
+            "parent": $(this).attr('data-parent'),
+            "position": $(this).attr('data-position'),
+            "level": $(this).attr('data-level'),
+            "branch-color": $(this).attr('data-branch-color'),
+            "position-top": parseInt($(this).css('top')),
+            "position-left": parseInt($(this).css('left')),
+            "color": $(this).css('background-color'),
+            "border": $(this).css('border'),
+            "width": parseInt($(this).css('width')),
+            "height": parseInt($(this).css('height')),
+            "text": $(this).text(),
+            "url": $(this).attr('data-url')
+        };
+
+        convertedArray.push(data);
+    });
+
+    var request = $.ajax({
+        type: "POST",
+        url: url,
+        data: {
+            'data': {
+                'nodes': convertedArray,
+                'wrapper': {
+                    'top': wrapperOffset.top,
+                    'left': wrapperOffset.left,
+                    'mind-map-id': $('#wrapper').attr('mind-map-id'),
+                    'mind-map-name': $('#wrapper').attr('mind-map-name'),
+                }
+            }
+        },
+        dataType: 'application/json; charset=UTF-8'
+    });
+
+    request.done(function( msg ) {
+        console.log( msg );
+    });
+
+    request.fail(function( jqXHR, textStatus, msg ) {
+        console.log( "Request failed: " + textStatus );
+        console.log(jqXHR.responseText);
+    });
+
+    console.log('ajax done');
+}
+
+
+/**
+ *
+ */
+function loadMindMap(){}
+
+
+/**
+ *
+ */
+function newMindMap(){}
+
+
+/**
+ *
+ */
+function deleteMindMap(){}
+
+
+
+
+
+/**
  * DOCUMENT READY ACTIONS
  */
 $( document ).ready( function(){
-    newMindMap();
+    //newMindMap();
     /** Get users mind maps from database - AJAX - create dropdown */
 
     /** Create buttons */
@@ -713,3 +817,28 @@ $( document ).ready( function(){
             /** change color */
 
 });
+
+
+/**
+ * PLUGINS
+ */
+(function($){
+    $.fn.offsetRelative = function(top){
+        var $this = $(this);
+        var $parent = $this.offsetParent();
+        var offset = $this.position();
+        if(!top) return offset; // Didn't pass a 'top' element
+        else if($parent.get(0).tagName == "BODY") return offset; // Reached top of document
+        else if($(top,$parent).length) return offset; // Parent element contains the 'top' element we want the offset to be relative to
+        else if($parent[0] == $(top)[0]) return offset; // Reached the 'top' element we want the offset to be relative to
+        else { // Get parent's relative offset
+            var parent_offset = $parent.offsetRelative(top);
+            offset.top += parent_offset.top;
+            offset.left += parent_offset.left;
+            return offset;
+        }
+    };
+    $.fn.positionRelative = function(top){
+        return $(this).offsetRelative(top);
+    };
+}(jQuery));
