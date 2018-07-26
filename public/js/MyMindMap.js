@@ -30,6 +30,167 @@ let colors = {
  */
 
 /**
+ *
+ * @param nodeId string
+ */
+function showTextInputDialog( nodeId ){
+    let node = document.getElementById(nodeId).childNodes[0];
+    let text = node.textContent;
+    let $input = $('#text-input');
+
+    $input.val( text );
+
+    let dialog = $( "#text-input-dialog" ).dialog({
+        autoOpen: true,
+        modal: true,
+        text: 'Přidejte text',
+        buttons: {
+            "OK": function(){
+                node.textContent = $input.val();
+                $input.val('');
+                dialog.dialog( "close" );
+            },
+            Cancel: function() {
+                $input.val('');
+                dialog.dialog( "close" );
+            }
+        }
+    });
+}
+
+
+/**
+ *
+ * @param $parent
+ */
+/*function collapseBranch( $parent ){
+    let children = getArrayOfChildren($parent);
+
+    $.each( children, function() {
+        $(this).css('display', 'none');
+
+        let $path = $('path' +
+            '[data-parent="' + $parent.attr('id') + '"]' +
+            '[data-child="' +  $(this).attr('id') + '"]');
+
+        $path.remove();
+
+        collapseBranch( $(this) );
+    });
+}*/
+
+
+/**
+ *
+ * @param $parent
+ */
+/*function expandBranch( $parent ){
+    let children = getArrayOfChildren($parent);
+
+    $.each( children, function() {
+        $(this).css('display', 'block');
+
+        addPathToChild( $(this), $parent);
+
+        expandBranch( $(this) );
+    });
+}*/
+
+
+/**
+ *
+ * @param $parent
+ */
+/*function deleteBranch( $parent ){
+    let children = getArrayOfChildren($parent);
+    let $parentPath = $('path' +
+        '[data-child="' + $parent.attr('id') + '"]');
+
+    $.each( children, function() {
+        let $childPath = $('path' +
+            '[data-parent="' + $parent.attr('id') + '"]' +
+            '[data-child="' +  $(this).attr('id') + '"]');
+
+        $childPath.remove();
+
+        $(this).remove();
+
+        deleteBranch( $(this) );
+    });
+
+    $parentPath.remove();
+    $parent.remove();
+}*/
+
+
+/**
+ *
+ */
+/*$(function() {
+    $.contextMenu({
+        selector: '.node-context-menu',
+        callback: function(key, options) {
+            if(key === "collapse"){
+                collapseBranch($(this));
+            }
+
+            if(key === "expand"){
+                expandBranch($(this));
+            }
+
+            if(key === "delete"){
+                deleteBranch($(this));
+            }
+
+            if(key === "addUrl"){
+                showUrlInputDialog($(this));
+            }
+
+            if(key === "save"){
+                saveMindMap();
+            }
+        },
+        items: {
+            "collapse": {name: "Collapse", icon: "add"},
+            "expand": {name: "Expand", icon: "add"},
+            "delete": {name: "Delete", icon: "delete"},
+            "addUrl": {name: "Add url", icon: "add"},
+            "goTo": {name: "Go to url", icon: "goTo"},
+            "save": {name: "Save", icon: "save"},
+            "quit": {name: "Quit", icon: function(){
+                    return 'context-menu-icon context-menu-icon-quit';
+                }}
+        }
+    });
+
+    $('.node-context-menu').on('click', function(e){
+
+    })
+});*/
+
+
+/**
+ *
+ * @param $node
+ */
+/*function showUrlInputDialog( $node ){
+    let dialog = $( "#url-input-dialog" ).dialog({
+        autoOpen: true,
+        modal: true,
+        buttons: {
+            "OK": function(){
+                $node.attr('data-url', $('#url-input').val());
+                dialog.dialog( "close" );
+            },
+            Cancel: function() {
+                dialog.dialog( "close" );
+            }
+        }
+    });
+}*/
+
+
+/**
  * FUNCTIONS
  */
 
@@ -245,8 +406,8 @@ function checkSide( $element ){
     let centerOffset = $('#main-topic').offset().left;
 
     return (
-        ( side == 'left' && ( nodeOffset > centerOffset ) ) ||
-        ( side == 'right' && ( nodeOffset < centerOffset ) )
+        ( side === 'left' && ( nodeOffset > centerOffset ) ) ||
+        ( side === 'right' && ( nodeOffset < centerOffset ) )
     )
 }
 
@@ -438,6 +599,8 @@ function movePaths( $node ){
 }
 
 
+
+
 /**
  * DOCUMENT READY ACTIONS
  */
@@ -481,6 +644,14 @@ $( document ).ready( function(){
             mouseleave: function() {
                 $('.add-button').remove();
             },
+            dblclick: function( event ) {
+                let $target = $(event.target);
+                let targetId = $target.attr('id');
+
+                if( $target.is('li') || targetId === 'main-topic'){
+                    showTextInputDialog( targetId );
+                }
+            },
             /** drag */
             /** click */
             /** double click */
@@ -491,7 +662,6 @@ $( document ).ready( function(){
         /** ADD BUTTONS */
         $('.add-button').on({
             click: function() {
-                console.log($(this));
                 newNode($(this));
             },
             mouseenter: function() {
