@@ -102,7 +102,7 @@ function expandBranch( $parent ){
  * @param $parent
  */
 function deleteBranch( $parent ){
-    let children = getArrayOfChildren($parent);
+    let children = $parent.children().find('li');
     let $parentPath = $('path' +
         '[data-child="' + $parent.attr('id') + '"]');
 
@@ -168,28 +168,6 @@ $(function() {
     })
 });
 
-
-/**
- * TODO - will I need this?
- *
- * Returns array of child node objects
- *
- * @param $parent
- * @param main true if node is main topic
- * @param position
- *
- * @returns {*|jQuery|HTMLElement}
- */
-function getArrayOfChildren( $parent, main = false, position = $parent.attr('data-position') ){
-    if(main){
-        return $('div[type="node"][data-parent="main-topic"]');
-    }
-
-    return $('div[type="node"][data-parent="' +
-        $parent.attr('id') + '"][data-position="' +
-        position + '"'
-    );
-}
 
 
 /**
