@@ -63,7 +63,7 @@ function showTextInputDialog( nodeId ){
  *
  * @param $parent
  */
-/*function collapseBranch( $parent ){
+function collapseBranch( $parent ){
     let children = getArrayOfChildren($parent);
 
     $.each( children, function() {
@@ -77,14 +77,14 @@ function showTextInputDialog( nodeId ){
 
         collapseBranch( $(this) );
     });
-}*/
+}
 
 
 /**
  *
  * @param $parent
  */
-/*function expandBranch( $parent ){
+function expandBranch( $parent ){
     let children = getArrayOfChildren($parent);
 
     $.each( children, function() {
@@ -94,14 +94,14 @@ function showTextInputDialog( nodeId ){
 
         expandBranch( $(this) );
     });
-}*/
+}
 
 
 /**
  *
  * @param $parent
  */
-/*function deleteBranch( $parent ){
+function deleteBranch( $parent ){
     let children = getArrayOfChildren($parent);
     let $parentPath = $('path' +
         '[data-child="' + $parent.attr('id') + '"]');
@@ -120,13 +120,13 @@ function showTextInputDialog( nodeId ){
 
     $parentPath.remove();
     $parent.remove();
-}*/
+}
 
 
 /**
  *
  */
-/*$(function() {
+$(function() {
     $.contextMenu({
         selector: '.node-context-menu',
         callback: function(key, options) {
@@ -164,9 +164,32 @@ function showTextInputDialog( nodeId ){
     });
 
     $('.node-context-menu').on('click', function(e){
-
+        event.preventDefault();
     })
-});*/
+});
+
+
+/**
+ * TODO - will I need this?
+ *
+ * Returns array of child node objects
+ *
+ * @param $parent
+ * @param main true if node is main topic
+ * @param position
+ *
+ * @returns {*|jQuery|HTMLElement}
+ */
+function getArrayOfChildren( $parent, main = false, position = $parent.attr('data-position') ){
+    if(main){
+        return $('div[type="node"][data-parent="main-topic"]');
+    }
+
+    return $('div[type="node"][data-parent="' +
+        $parent.attr('id') + '"][data-position="' +
+        position + '"'
+    );
+}
 
 
 /**
@@ -259,6 +282,7 @@ function newNode( $parent, side ){
         .attr('data-side', side)
         .attr('data-level', parseInt($parent.attr('data-level')) + 1)
         .attr('data-parent', $parent.attr('id'))
+        .addClass('node-context-menu')
         .uniqueId()
         .draggable({
             stop: function(){
