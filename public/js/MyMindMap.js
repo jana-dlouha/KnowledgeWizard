@@ -60,7 +60,7 @@ function showTextInputDialog( nodeId ){
 
 
 /**
- * TODO - url selector using symfony
+ * TODO - url selector using symfony paths
  *
  * @param $node
  */
@@ -173,13 +173,13 @@ $(function() {
             }
         },
         items: {
-            "collapse": {name: "Collapse", icon: "add"},
-            "expand": {name: "Expand", icon: "add"},
-            "delete": {name: "Delete", icon: "delete"},
-            "addUrl": {name: "Add url", icon: "add"},
-            "goTo": {name: "Go to url", icon: "goTo"},
-            "save": {name: "Save", icon: "save"},
-            "quit": {name: "Quit", icon: function(){
+            "collapse": { name: "Collapse", icon: "add" },
+            "expand": { name: "Expand", icon: "add" },
+            "delete": { name: "Delete", icon: "delete" },
+            "addUrl": { name: "Add url", icon: "add" },
+            "goTo": { name: "Go to url", icon: "goTo" },
+            "save": { name: "Save", icon: "save" },
+            "quit": { name: "Quit", icon: function(){
                     return 'context-menu-icon context-menu-icon-quit';
                 }}
         }
@@ -192,26 +192,6 @@ $(function() {
 
 
 
-/**
- *
- * @param $node
- */
-/*function showUrlInputDialog( $node ){
-    let dialog = $( "#url-input-dialog" ).dialog({
-        autoOpen: true,
-        modal: true,
-        buttons: {
-            "OK": function(){
-                $node.attr('data-url', $('#url-input').val());
-                dialog.dialog( "close" );
-            },
-            Cancel: function() {
-                dialog.dialog( "close" );
-            }
-        }
-    });
-}*/
-
 
 /**
  * FUNCTIONS
@@ -221,7 +201,7 @@ $(function() {
 /**
  *
  */
-function newMindMap(){
+function drawMindMap(){
     $paths = $('<div id="paths" />');
 
     $wrapper = $('#wrapper')
@@ -258,6 +238,7 @@ function newMainTopic(){
                 movePaths( $(this) );
             }
         })
+        .resizable()
         .appendTo($wrapper)
         .position({
             my: "center",
@@ -291,7 +272,8 @@ function newNode( $parent, side ){
                 }
                 movePaths( $( this ) );
             }
-        });
+        })
+        .resizable();
 
     getParentContainer( $parent, side).append( $node );
     reCenterParentContainer( $parent, $node, side, spacing );
@@ -733,7 +715,7 @@ function deleteMindMap(){}
  * DOCUMENT READY ACTIONS
  */
 $( document ).ready( function(){
-    //newMindMap();
+    drawMindMap();
     /** Get users mind maps from database - AJAX - create dropdown */
 
     /** Create buttons */
