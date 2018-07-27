@@ -199,11 +199,10 @@ $(function() {
  * FUNCTIONS
  */
 
-
 /**
  *
  */
-function drawMindMap(){
+function newDesktop(){
     $paths = $('<div id="paths" />');
 
     $wrapper = $('#wrapper')
@@ -215,19 +214,21 @@ function drawMindMap(){
             my: "center",
             at: "center+125",
             of: $(window)
+        }).on({
+            dblclick: function() {
+                newMindMap();
+            }
         });
 
     draw = SVG('paths').size('100%', '100%');
-
-    newMainTopic();
 }
 
 
 /**
  *
  */
-function newMainTopic(){
-    $mainTopic = $('<div>Main topic</div>')
+function newMainTopic( text = "Main topic" ){
+    $mainTopic = $('<div>' + text + '</div>')
         .attr('id', 'main-topic')
         .addClass('node-menu-one')
         .addClass('node')
@@ -261,7 +262,7 @@ function newMainTopic(){
  * @param side
  */
 function newNode( $parent, side ){
-    let $node = $('<li class="node">New node</li>')
+    let $node = $('<li class="node"></li>')
         .attr('data-side', side)
         .attr('data-level', parseInt($parent.attr('data-level')) + 1)
         .attr('data-parent', $parent.attr('id'))
@@ -617,6 +618,21 @@ function movePaths( $node ){
  * BACKEND CONNECTION
  */
 
+/**
+ *
+ */
+function clearDesktop(){
+    let oldDesktop = $('#wrapper');
+
+    if( oldDesktop ){
+        if( $('#paths') ){
+            oldDesktop.find('#paths').remove();
+            oldDesktop.find('#main-topic').remove();
+            oldDesktop.find('.node').remove();
+        }
+    }
+}
+
 
 /**
  * TODO
@@ -627,16 +643,21 @@ function saveMindMap(){
      * TODO
      *
      */
-    console.log($parent.attr('id'));
+/*    console.log($parent.attr('id'));
     console.log($(this).attr('id'));
-    console.log($( this ).offsetRelative('#' + $parent.attr('id')));
+    console.log($( this ).offsetRelative('#' + $parent.attr('id')));*/
     /**
      *
      * TODO
      *
      */
 
-    let url = $('#wrapper').attr('data-script');
+    let $data = {};
+
+
+
+
+    /*let url = $('#wrapper').attr('data-script');
     let nodes = $('#main-topic, .node');
     let data;
     let convertedArray = [];
@@ -692,20 +713,26 @@ function saveMindMap(){
         console.log(jqXHR.responseText);
     });
 
-    console.log('ajax done');
+    console.log('ajax done');*/
 }
 
 
 /**
  *
  */
-function loadMindMap(){}
+function loadMindMap(){
+
+}
 
 
 /**
  *
  */
-function newMindMap(){}
+function newMindMap(){
+    clearDesktop();
+    newDesktop();
+    newMainTopic();
+}
 
 
 /**
@@ -721,7 +748,7 @@ function deleteMindMap(){}
  * DOCUMENT READY ACTIONS
  */
 $( document ).ready( function(){
-    drawMindMap();
+    newMindMap();
     /** Get users mind maps from database - AJAX - create dropdown */
 
     /** Create buttons */
