@@ -49,6 +49,8 @@ function showTextInputDialog( nodeId ){
                 node.textContent = $input.val();
                 $input.val('');
                 dialog.dialog( "close" );
+
+                movePaths( $('#' + nodeId) );
             },
             Cancel: function() {
                 $input.val('');
@@ -273,7 +275,11 @@ function newNode( $parent, side ){
                 movePaths( $( this ) );
             }
         })
-        .resizable();
+        .resizable({
+            stop: function(){
+                movePaths( $parent );
+            }
+        });
 
     getParentContainer( $parent, side).append( $node );
     reCenterParentContainer( $parent, $node, side, spacing );
