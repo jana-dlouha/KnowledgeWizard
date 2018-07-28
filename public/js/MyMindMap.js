@@ -33,20 +33,28 @@ let colors = {
  *
  * @param nodeId string
  */
-function showTextInputDialog( nodeId ){
-    let node = document.getElementById(nodeId).childNodes[0];
-    let text = node.textContent;
-    let $input = $('#text-input');
+function showTextInputDialog( $target ){
+    let $nodeText = $target;
 
-    $input.val( text );
+    if( !$target.hasClass('node-text') ){
+        if( !$target.hasClass('node') ){
+            return;
+        }
+
+        $nodeText = $('.node-text[data-parent=' + $target.attr('id') + ']');
+    }
+
+    let nodeId = $nodeText.attr('data-parent');
+    let text = $nodeText.text();
+    let $input = $('#text-input').val( text );
 
     let dialog = $( "#text-input-dialog" ).dialog({
         autoOpen: true,
         modal: true,
-        text: 'Přidejte text',
+        text: 'Node text',
         buttons: {
             "OK": function(){
-                node.textContent = $input.val();
+                $nodeText.text( $input.val() );
                 $input.val('');
                 dialog.dialog( "close" );
 
@@ -214,11 +222,12 @@ function newDesktop(){
             my: "center",
             at: "center+125",
             of: $(window)
-        }).on({
-            dblclick: function() {
+        })/*.on({
+            dblclick: function( event ) {
+                console.log('Testing map delete');
                 newMindMap();
             }
-        });
+        })*/;
 
     draw = SVG('paths').size('100%', '100%');
 }
@@ -248,6 +257,19 @@ function newMainTopic( text = "Main topic" ){
             at: "center",
             of: "#wrapper"
         });
+
+    $mainTopic.on({
+        mouseenter: function( event ) {
+            showAddButtons( $(event.target), 'left' );
+            showAddButtons( $(event.target), 'right' );
+        },
+        mouseleave: function() {
+            $('.add-button').remove();
+        },
+        dblclick: function( event ) {
+            showTextInputDialog( $(event.target) );
+        }
+    });
 
     newContainer( $mainTopic, 'left' );
     newContainer( $mainTopic, 'right' );
@@ -281,6 +303,25 @@ function newNode( $parent, side ){
                 movePaths( $parent );
             }
         });
+
+    $node.on({
+        mouseenter: function( event ) {
+            if( $(event.target).is('li') ){
+                showAddButtons($(event.target), $(event.target).attr('data-side'));
+            }
+        },
+        mouseleave: function() {
+            $('.add-button').remove();
+        },
+        dblclick: function( event ) {
+            showTextInputDialog( $(event.target) );
+        },
+    });
+
+
+    let $nodeText = $('<div class="node-text" data-parent="' + $node.attr('id') + '">New node</div>');
+
+    $nodeText.appendTo( $node );
 
     getParentContainer( $parent, side).append( $node );
     reCenterParentContainer( $parent, $node, side, spacing );
@@ -759,6 +800,13 @@ $( document ).ready( function(){
     /** delete map */
     /** duplicate map */
 
+        /** drag */
+        /** click */
+        /** double click */
+        /** hover */
+        /** right click */
+
+
     /** Events and actions? */
 
         /** SCREEN */
@@ -770,37 +818,6 @@ $( document ).ready( function(){
         /** MIND MAP COMBOBOX */
             /** click, change */
 
-        /** MAIN TOPIC */
-
-
-        $('.node').on({
-            mouseenter: function( event ) {
-                let $target = $(event.target);
-
-                if( $target.attr('id') === 'main-topic' ){
-                    showAddButtons($target, 'left');
-                    showAddButtons($target, 'right');
-                } else if ($target.hasClass('node')) {
-                    showAddButtons($target, $target.attr('data-side'));
-                }
-            },
-            mouseleave: function() {
-                $('.add-button').remove();
-            },
-            dblclick: function( event ) {
-                let $target = $(event.target);
-                let targetId = $target.attr('id');
-
-                if( $target.is('li') || targetId === 'main-topic'){
-                    showTextInputDialog( targetId );
-                }
-            },
-            /** drag */
-            /** click */
-            /** double click */
-            /** hover */
-            /** right click */
-        });
 
         /** ADD BUTTONS */
         $('.add-button').on({
@@ -813,6 +830,21 @@ $( document ).ready( function(){
         });
 
         /** CLEAR, NEW, SAVE BUTTONS? */
+
+        $('.ui-resizable-handle').on({
+            mouseenter: function(event) {
+                let $parent = $(event.target.parentNode);
+
+                if( $parent.attr('id') === 'main-topic' ){
+                    showAddButtons( $parent, 'left' );
+                    showAddButtons( $parent, 'right' );
+
+                    return;
+                }
+
+                showAddButtons( $parent );
+            }
+        });
 
 
     /** CONTEXT MENU and DIALOGS */
