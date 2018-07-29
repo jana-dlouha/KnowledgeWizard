@@ -3,7 +3,7 @@
  */
 
 /** global ariables */
-let $wrapper, $paths, $mainTopic, oldOffset, newOffset, $addLeft, $addRight, nodes;
+let $wrapper, $paths, $mainTopic, nodes;
 
 /** vertical spacing between nodes */
 let spacing = 50;
@@ -48,21 +48,18 @@ function showTextInputDialog( $node ){
     let text = $nodeText.text();
     let $input = $('#text-input').val( text );
 
-    let dialog = $( "#text-input-dialog" ).dialog({
+    $( "#text-input-dialog" ).dialog({
         autoOpen: true,
         modal: true,
-        text: 'Node text',
         buttons: {
             "OK": function(){
                 $nodeText.text( $input.val() );
-                $input.val('');
-                dialog.dialog( "close" );
+                $(this).dialog( "close" );
 
                 movePaths( $('#' + nodeId) );
             },
             Cancel: function() {
-                $input.val('');
-                dialog.dialog( "close" );
+                $(this).dialog( "close" );
             }
         }
     });
@@ -760,6 +757,8 @@ function deleteMapLocal(){
 function autosaveMapLocal(){
     localStorage.clear();
 
+    let mapData = {'main-topic': '<div id="main-topic" class="node-menu-one node-ui-draggable ui-draggable-handle" data-level="0" style=top: 2480px; left: 2450px; background-color: blue"'};
+
     localStorage.setItem(
         "mapa",
         JSON.stringify($mainTopic)
@@ -768,13 +767,7 @@ function autosaveMapLocal(){
 
     console.log(localStorage);
 
-
-
-
     //inform user how long is from last autosave
-
-
-
 }
 
 
