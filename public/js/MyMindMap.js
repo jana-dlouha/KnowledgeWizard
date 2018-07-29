@@ -98,6 +98,9 @@ function showUrlInputDialog( $node ){
 function collapseBranch( $parent ){
     let children = $parent.children().find('li');
 
+    console.log($parent);
+    console.log(children);
+
     $.each( children, function() {
         $(this).css('display', 'none');
 
@@ -148,6 +151,7 @@ function deleteBranch( $parent ){
         $(this).remove();
 
         deleteBranch( $(this) );
+        movePaths( $('#main-topic') );
     });
 
     $parentPath.remove();
@@ -250,7 +254,6 @@ function newMainTopic( text = "Main topic" ){
                 movePaths( $(this) );
             }
         })
-        .resizable()
         .appendTo($wrapper)
         .position({
             my: "center",
@@ -298,11 +301,11 @@ function newNode( $parent, side ){
                 movePaths( $( this ) );
             }
         })
-        .resizable({
+        /*.resizable({
             stop: function(){
                 movePaths( $parent );
             }
-        });
+        })*/;
 
     $node.on({
         mouseenter: function( event ) {
