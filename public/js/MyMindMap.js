@@ -709,9 +709,81 @@ function clearDesktop(){
 
 
 /**
+ *
+ */
+function newMindMap(){
+    clearDesktop();
+    newDesktop();
+    newMainTopic();
+}
+
+
+/**
+ * autoload - when website visited
+ */
+function loadLocalMap(){
+    let $newMainTopic;
+
+    let data = localStorage.getItem("mapa");
+    if (data) {
+        $newMainTopic = JSON.parse(data);
+    }
+
+    clearDesktop();
+
+    $('#wrapper').append($newMainTopic);
+
+    console.log('DONE');
+}
+
+
+/**
+ *
+ */
+function localMapAvailable(){
+    return false;
+}
+
+
+/**
+ *
+ */
+function deleteMapLocal(){
+    clearDesktop();
+    localStorage.clear();
+}
+
+
+/**
+ * autosave - after time period
+ */
+function autosaveMapLocal(){
+    localStorage.clear();
+
+    localStorage.setItem(
+        "mapa",
+        JSON.stringify($mainTopic)
+    );
+
+
+    console.log(localStorage);
+
+
+
+
+    //inform user how long is from last autosave
+
+
+
+}
+
+
+/**
  * TODO
  */
-function saveMindMap(){
+function saveMapToDatabase(){
+
+
     /**
      *
      * TODO
@@ -726,7 +798,7 @@ function saveMindMap(){
      *
      */
 
-    let $data = {};
+    //let $data = {};
 
 
 
@@ -794,9 +866,7 @@ function saveMindMap(){
 /**
  *
  */
-function loadMindMap(){
-
-}
+function loadMapFromDatabase(){
 
 }
 
@@ -804,7 +874,9 @@ function loadMindMap(){
 /**
  *
  */
-function deleteMindMap(){}
+function deleteMapFromDatabase(){
+
+}
 
 
 
@@ -814,7 +886,16 @@ function deleteMindMap(){}
  * DOCUMENT READY ACTIONS
  */
 $( document ).ready( function(){
-    newMindMap();
+    newDesktop();
+    newMainTopic();
+
+    if( localMapAvailable() ){
+        loadLocalMap();
+    }
+
+    autosaveMapLocal();
+    loadLocalMap();
+
     /** Get users mind maps from database - AJAX - create dropdown */
 
     /** Create buttons */
