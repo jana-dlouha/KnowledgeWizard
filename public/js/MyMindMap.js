@@ -31,17 +31,17 @@ let colors = {
 
 /**
  *
- * @param nodeId string
+ * @param $node string
  */
-function showTextInputDialog( $target ){
-    let $nodeText = $target;
+function showTextInputDialog( $node ){
+    let $nodeText = $node;
 
-    if( !$target.hasClass('node-text') ){
-        if( !$target.hasClass('node') ){
+    if( !$node.hasClass('node-text') ){
+        if( !$node.hasClass('node') ){
             return;
         }
 
-        $nodeText = $('.node-text[data-parent=' + $target.attr('id') + ']');
+        $nodeText = $('.node-text[data-parent=' + $node.attr('id') + ']');
     }
 
     let nodeId = $nodeText.attr('data-parent');
@@ -98,9 +98,6 @@ function showUrlInputDialog( $node ){
 function collapseBranch( $parent ){
     let children = $parent.children().find('li');
 
-    console.log($parent);
-    console.log(children);
-
     $.each( children, function() {
         $(this).css('display', 'none');
 
@@ -112,6 +109,8 @@ function collapseBranch( $parent ){
 
         collapseBranch( $(this) );
     });
+
+    $parent.addClass('collapsed');
 }
 
 
@@ -129,6 +128,8 @@ function expandBranch( $parent ){
 
         expandBranch( $(this) );
     });
+
+    $parent.removeClass('collapsed');
 }
 
 
@@ -151,7 +152,6 @@ function deleteBranch( $parent ){
         $(this).remove();
 
         deleteBranch( $(this) );
-        movePaths( $('#main-topic') );
     });
 
     $parentPath.remove();
@@ -176,6 +176,7 @@ $(function() {
 
             if(key === "delete"){
                 deleteBranch($(this));
+                movePaths( $('#' + $(this).attr('data-parent')) );
             }
 
             if(key === "addUrl"){
@@ -183,12 +184,22 @@ $(function() {
             }
 
             if(key === "save"){
-                saveMindMap();
+                saveMapToDatabase();
             }
         },
         items: {
-            "collapse": { name: "Collapse", icon: "add" },
-            "expand": { name: "Expand", icon: "add" },
+            "collapse": {
+                name: "Collapse",
+                icon: "add",
+                visible: function( key, e ){
+                    return ( !isCollapsed( e.$trigger ) && hasChildNodes( e.$trigger ) )
+                }},
+            "expand": {
+                name: "Expand",
+                icon: "add",
+                visible: function( key, e ){
+                    return isCollapsed( e.$trigger );
+                }},
             "delete": { name: "Delete", icon: "delete" },
             "addUrl": { name: "Add url", icon: "add" },
             "goTo": { name: "Go to url", icon: "goTo" },
@@ -226,12 +237,7 @@ function newDesktop(){
             my: "center",
             at: "center+125",
             of: $(window)
-        })/*.on({
-            dblclick: function( event ) {
-                console.log('Testing map delete');
-                newMindMap();
-            }
-        })*/;
+        });
 
     draw = SVG('paths').size('100%', '100%');
 }
@@ -263,14 +269,16 @@ function newMainTopic( text = "Main topic" ){
 
     $mainTopic.on({
         mouseenter: function( event ) {
-            showAddButtons( $(event.target), 'left' );
-            showAddButtons( $(event.target), 'right' );
+            if( $(event.target).attr('id') === 'main-topic'){
+                showAddButtons( $(event.target), 'left' );
+                showAddButtons( $(event.target), 'right' );
+            }
         },
         mouseleave: function() {
             $('.add-button').remove();
         },
         dblclick: function( event ) {
-            showTextInputDialog( $(event.target) );
+            showTextInputDialog( $(event.target ) );
         }
     });
 
@@ -310,11 +318,11 @@ function newNode( $parent, side ){
     $node.on({
         mouseenter: function( event ) {
             if( $(event.target).is('li') ){
-                showAddButtons($(event.target), $(event.target).attr('data-side'));
+                showAddButtons( $(event.target), $(event.target).attr('data-side') );
             }
         },
         mouseleave: function() {
-            $('.add-button').remove();
+            $( '.add-button' ).remove();
         },
         dblclick: function( event ) {
             showTextInputDialog( $(event.target) );
@@ -332,6 +340,24 @@ function newNode( $parent, side ){
     getNodePosition( $parent, $node, side, spacing );
     getPath( $parent, $node );
     movePaths( $parent );
+}
+
+
+/**
+ *
+ * @param $node
+ */
+function hasChildNodes( $node ){
+   return $node.children('ul').children('li').length;
+}
+
+
+/**
+ *
+ * @param $node
+ */
+function isCollapsed( $node ){
+    return $node.hasClass('collapsed');
 }
 
 
@@ -513,6 +539,10 @@ function getOppositeSide( side ){
  * @param side
  */
 function showAddButtons( $node, side ){
+    if( !$node.hasClass('node') ){
+        return false;
+    }
+
     let style = { backgroundColor: $node.css('background-color') };
 
     let $addButton = $('<div class="add-button">+</div>')
@@ -768,14 +798,6 @@ function loadMindMap(){
 
 }
 
-
-/**
- *
- */
-function newMindMap(){
-    clearDesktop();
-    newDesktop();
-    newMainTopic();
 }
 
 
@@ -825,29 +847,12 @@ $( document ).ready( function(){
         /** ADD BUTTONS */
         $('.add-button').on({
             click: function() {
-                newNode($(this));
-            },
-            mouseenter: function() {
-                showAddButtons($(this));
+                newNode( $(this) );
             }
         });
 
         /** CLEAR, NEW, SAVE BUTTONS? */
 
-        $('.ui-resizable-handle').on({
-            mouseenter: function(event) {
-                let $parent = $(event.target.parentNode);
-
-                if( $parent.attr('id') === 'main-topic' ){
-                    showAddButtons( $parent, 'left' );
-                    showAddButtons( $parent, 'right' );
-
-                    return;
-                }
-
-                showAddButtons( $parent );
-            }
-        });
 
 
     /** CONTEXT MENU and DIALOGS */
